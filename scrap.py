@@ -44,7 +44,7 @@ for url in recipes_href_list:
     try:
         # Attend jusqu'à 10 secondes que la page soit complètement chargée
         print('try')
-        element = WebDriverWait(driver, 10).until(
+        element = WebDriverWait(driver, 15).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "dBXpHX"))
         )
 
