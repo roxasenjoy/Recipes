@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import sqlite3
 
-conn = sqlite3.connect('dbs.db')
+conn = sqlite3.connect('db.db')
 cur = conn.cursor()
 
 driverPath = 'chromedriver'
@@ -52,16 +52,22 @@ for url in recipes_href_list:
         print('fin')
         # Ajouter le titre de la recette
         titre_recette = driver.find_element(by='css selector', value='h2.jNNXFk')
-        cur.execute("INSERT INTO recette (name) VALUES (?)", (titre_recette.text,))
-        last_id_generated = cur.lastrowid
-        print(last_id_generated)
+        
+        #Image de la recette
+        image_recette = driver.find_element(by='css selector', value='img.hjfyGJ')
+        image_recette = image_recette.get_attribute('src')
+
+        cur.execute("INSERT INTO recette (name, image) VALUES (?, ?)", (titre_recette.text, image_recette,))
+        last_id_generat = cur.lastrowid
         conn.commit()
+
+    
 
         # Ajouter la liste des ingrédients
         liste_ingredients = driver.find_elements(by='css selector', value='div.dBXpHX')
         for ingredient in liste_ingredients:
             cur.execute("INSERT INTO ingredients (id_recette, name) VALUES (?, ?)",
-                        (last_id_generated, ingredient.text))
+                        (last_id_generat, ingredient.text))
             conn.commit()
 
         # Ajouter la description de la recette
@@ -70,7 +76,7 @@ for url in recipes_href_list:
         for description in liste_description:
             step += 1
             cur.execute("INSERT INTO instructions (id_recette ,step ,instructions) VALUES (?, ?, ?)",
-                        (last_id_generated, step, description.text))
+                        (last_id_generat, step, description.text))
             conn.commit()
         continue
     break
