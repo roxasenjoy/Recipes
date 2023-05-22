@@ -3,7 +3,6 @@
     <head>
         <title>Ma page web</title>
         <link rel="stylesheet" href="index.css">
-        <script src="index.js"></script>
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
@@ -37,9 +36,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <% ingredients.forEach((row) => { %>
-                            <!-- <p><%= row.name %></p> -->
-                        <% }); %>
 
                     </div>
                     <div class="modal-footer">
@@ -66,13 +62,21 @@
                     data: { id: id },
                     success: function(response) {
                         var ingredients = response.ingredients;
-
-                        console.log(ingredients);
+                        var recettes = response.recettes;
+                        var instructions = response.instructions;
 
                         var modalBody = "";
 
                         for (var i = 0; i < ingredients.length; i++) {
                             modalBody += "<p>" + ingredients[i].name + "</p>";
+                        }
+
+                        for (var i = 0; i < recettes.length; i++) {
+                            modalBody += "<p>" + recettes[i].name + "</p>";
+                        }
+
+                        for (var i = 0; i < instructions.length; i++) {
+                            modalBody += "<p>" + instructions[i].instructions + "</p>";
                         }
 
                         $(".modal-body").html(modalBody);

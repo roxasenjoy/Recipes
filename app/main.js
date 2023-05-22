@@ -30,14 +30,36 @@ app.get('/', async (req, res) => {
         // Exécute la requête SQL pour récupérer tous les ingrédients associés à cette recette
         // On utilise une Promesse pour gérer l'asynchronicité de la requête SQL
         ingredients = await new Promise((resolve, reject) => {
-            db.all('SELECT * FROM recette JOIN ingredients ON recette.id = ingredients.id_recette WHERE recette.id = ?', [id], (err, rows) => {
+            db.all('SELECT ingredients.* \
+                    FROM recette \
+                    JOIN ingredients ON recette.id = ingredients.id_recette \
+                    WHERE recette.id = ?', [id], (err, rows) => {
+                if(err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        recipe_by_id = await new Promise((resolve, reject) => {
+            db.all('SELECT *\
+                    FROM recette \
+                    WHERE recette.id = ?', [id], (err, rows) => {
+                if(err) reject(err);
+                resolve(rows);
+            });
+        });
+
+        instructions = await new Promise((resolve, reject) => {
+            db.all('SELECT instructions.* \
+                    FROM instructions \
+                    JOIN recette ON recette.id = instructions.id_recette \
+                    WHERE recette.id = ?', [id], (err, rows) => {
                 if(err) reject(err);
                 resolve(rows);
             });
         });
 
         // Réponse à la requête avec les ingrédients au format JSON
-        res.json({ingredients: ingredients});
+        res.json({ingredients: ingredients, recettes: recipe_by_id, instructions: instructions});
     }
 
     // Rendu de la vue 'index', en passant les recettes et les ingrédients en tant que données de contexte
