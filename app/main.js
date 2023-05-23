@@ -17,7 +17,7 @@ app.get('/', async (req, res) => {
     // Exécution de la requête SQL pour récupérer toutes les recettes
     // On utilise une Promesse pour gérer l'asynchronicité de la requête SQL
     let recette = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM recette', (err, rows) => {
+        db.all('SELECT * FROM recette ORDER BY id desc ', (err, rows) => {
             if(err) reject(err);
             resolve(rows);
         });
