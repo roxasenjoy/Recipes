@@ -36,20 +36,17 @@ driver.quit()
 
 for url in recipes_href_list:
     print(url)
-    print('url')
 
     driver = webdriver.Chrome()
     driver.get(url)
 
     try:
         # Attend jusqu'à 10 secondes que la page soit complètement chargée
-        print('try')
         element = WebDriverWait(driver, 15).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "dBXpHX"))
         )
 
     finally:
-        print('fin')
         # Ajouter le titre de la recette
         titre_recette = driver.find_element(by='css selector', value='h2.jNNXFk')
         
@@ -60,8 +57,6 @@ for url in recipes_href_list:
         cur.execute("INSERT INTO recette (name, image) VALUES (?, ?)", (titre_recette.text, image_recette,))
         last_id_generat = cur.lastrowid
         conn.commit()
-
-    
 
         # Ajouter la liste des ingrédients
         liste_ingredients = driver.find_elements(by='css selector', value='div.dBXpHX')

@@ -48,22 +48,22 @@
     <SCRIPT>
         $(document).ready(function(){
 
-            function deuxiemeMajuscule(chaine) {
-                let compteurMajuscules = 0;
+            function cutBeforeSecondUppercase(str) {
+                let count = 0;
+                let index = 0;
 
-                for (let i = 0; i < chaine.length; i++) {
-                    let caractere = chaine[i];
+                for (let i = 0; i < str.length; i++) {
+                    if (str[i] === str[i].toUpperCase() && str[i] !== str[i].toLowerCase()) {
+                        count++;
 
-                    if (caractere >= 'A' && caractere <= 'Z') {
-                    compteurMajuscules++;
-
-                    if (compteurMajuscules === 2) {
-                        return caractere;
-                    }
+                        if (count === 2) {
+                            index = i;
+                            break;
+                        }
                     }
                 }
 
-                return null; // Si la deuxième majuscule n'est pas trouvée
+                return str.substring(index);
             }
 
             function supprimerAccents(chaine) {
@@ -103,28 +103,19 @@
 
                         /* Liste des instructions */
                         for (var i = 0; i < instructions.length; i++) {
-                            ;
-                            /*
-                                Obtenir l'étape 
-                                Supprimer le premier caractère qui correspond à l'étape
-                                Insérer la valeur qui contient l'étape 
-                                Insérer l'instruction à côté 
-                            */
+                        
                             const step = instructions[i].step;
-                            const texte = instructions[i].instructions;
-                            const deuxiemeMaj = deuxiemeMajuscule(texte);
+                            let texte = cutBeforeSecondUppercase(instructions[i].instructions);
+                            texte = texte.replace(/[!?]/g, '.');
 
-                            // TODO -> OBTENIR LA CLE DE LA DEUXIEME LETTRE EN MASJUSCULE DE LA CHAINE DE CARACTERE
-
-                            let indexSecondSautDeLigne = texte.indexOf(deuxiemeMaj, texte.indexOf(deuxiemeMaj) + 1);
-                            let newInstruction = texte.substring(indexSecondSautDeLigne + 1);
+   
 
                             // Ajout de l'étape
                             modalBody += "<p class='step'> Étape n°" + step + "</p>";
 
-                            let html = '';
-                            for (let i = 0; i < newInstruction.length; i++) {
-                                modalBody += "<p class='instructions'>" +newInstruction[i] + ".<br></p>"; // Ajoute une balise <br> à chaque phrase
+                            let arrayTexte = texte.split('.');
+                            for (let i = 0; i < arrayTexte.length; i++) {
+                                modalBody += "<p class='instructions'>" + arrayTexte[i] + ".<br></p>"; // Ajoute une balise <br> à chaque phrase
                             }
                         }
 
