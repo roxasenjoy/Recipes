@@ -16,7 +16,7 @@
 
         <div class="recipes-list">
             <% recettes.forEach((row) => { %>
-                <a href="" class="recipe-link" data-id="<%= row.id %>">
+                <a href="" class="recipe-link" data-id="<%= row.id %>" data-toggle="modal" data-target="#myModal">
                     <div class="container">
                         <img src=<%= row.image %> alt=''>
                         <p id="title"><%= row.name %></p>
@@ -26,30 +26,51 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal left fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+
                     <div class="modal-header">
-                        <h5 class="modal-title" id="myModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <img src="" alt="" id="img-recipes">
                     </div>
+
                     <div class="modal-body">
 
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+                </div><!-- modal-content -->
+            </div><!-- modal-dialog -->
+        </div><!-- modal -->
 
     </body>
 
 
     <SCRIPT>
         $(document).ready(function(){
+
+            function deuxiemeMajuscule(chaine) {
+                let compteurMajuscules = 0;
+
+                for (let i = 0; i < chaine.length; i++) {
+                    let caractere = chaine[i];
+
+                    if (caractere >= 'A' && caractere <= 'Z') {
+                    compteurMajuscules++;
+
+                    if (compteurMajuscules === 2) {
+                        return caractere;
+                    }
+                    }
+                }
+
+                return null; // Si la deuxième majuscule n'est pas trouvée
+            }
+
+            function supprimerAccents(chaine) {
+            return chaine.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            }
+
+
             $(".recipe-link").click(function(e){
                 e.preventDefault();  // Empêche l'action par défaut (la navigation)
                 
@@ -61,25 +82,54 @@
                     type: 'GET',
                     data: { id: id },
                     success: function(response) {
+
                         var ingredients = response.ingredients;
                         var recettes = response.recettes;
                         var instructions = response.instructions;
 
                         var modalBody = "";
 
+                        /* Changer l'image de la photo */
+                        $("#img-recipes").attr("src", recettes[0].image);
+
+                        /* Nom de la recette */
+                        modalBody += '<h2  class="recipe-title"> ' + recettes[0].name + '</h2>';
+
+                        /* Liste des ingrédients */
+                        modalBody += "<p class='title-ingredients'> Ingrédients pour 2 personnes : </p>";
                         for (var i = 0; i < ingredients.length; i++) {
-                            modalBody += "<p>" + ingredients[i].name + "</p>";
+                            modalBody += "<p class='ingredients'> - " + ingredients[i].name + "</p>";
                         }
 
-                        for (var i = 0; i < recettes.length; i++) {
-                            modalBody += "<p>" + recettes[i].name + "</p>";
-                        }
-
+                        /* Liste des instructions */
                         for (var i = 0; i < instructions.length; i++) {
-                            modalBody += "<p>" + instructions[i].instructions + "</p>";
+                            ;
+                            /*
+                                Obtenir l'étape 
+                                Supprimer le premier caractère qui correspond à l'étape
+                                Insérer la valeur qui contient l'étape 
+                                Insérer l'instruction à côté 
+                            */
+                            const step = instructions[i].step;
+                            const texte = instructions[i].instructions;
+                            const deuxiemeMaj = deuxiemeMajuscule(texte);
+
+                            // TODO -> OBTENIR LA CLE DE LA DEUXIEME LETTRE EN MASJUSCULE DE LA CHAINE DE CARACTERE
+
+                            let indexSecondSautDeLigne = texte.indexOf(deuxiemeMaj, texte.indexOf(deuxiemeMaj) + 1);
+                            let newInstruction = texte.substring(indexSecondSautDeLigne + 1);
+
+                            // Ajout de l'étape
+                            modalBody += "<p class='step'> Étape n°" + step + "</p>";
+
+                            let html = '';
+                            for (let i = 0; i < newInstruction.length; i++) {
+                                modalBody += "<p class='instructions'>" +newInstruction[i] + ".<br></p>"; // Ajoute une balise <br> à chaque phrase
+                            }
                         }
 
                         $(".modal-body").html(modalBody);
+
                         $('#myModal').modal('show');
                     }
                 });

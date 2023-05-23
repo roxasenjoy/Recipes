@@ -2,6 +2,7 @@
   	margin: 0;
   	padding: 0;
 	box-sizing: 0;
+	font-family: Catamaran, sans-serif;
 }
 
 .recipes-list{
@@ -46,7 +47,6 @@ p{
 	background: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
-    height: 100%;
 	align-items: center;
 	justify-content: center;
 	color: rgb(74, 74, 74);
@@ -59,4 +59,190 @@ p{
     text-decoration: none;
     text-overflow: ellipsis;
 	text-align: center;
+}
+
+/*******************************
+* MODAL AS LEFT/RIGHT SIDEBAR
+* Add "left" or "right" in modal parent div, after class="modal".
+* Get free snippets on bootpen.com
+*******************************/
+.modal.left .modal-dialog,
+.modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: 700px;
+	height: 100%;
+	-webkit-transform: translate3d(0%, 0, 0);
+		-ms-transform: translate3d(0%, 0, 0);
+		 -o-transform: translate3d(0%, 0, 0);
+			transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content {
+	height: 100%;
+	overflow-y: auto;
+}
+
+.modal.left .modal-body,
+.modal.right .modal-body {
+	padding: 15px 15px 80px;
+}
+
+/*Left*/
+.modal.left.fade .modal-dialog{
+	left: 700px !important;
+	-webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+		 -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+			transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.modal.left.fade.show .modal-dialog{
+	left: 0 !important;
+}
+
+.close{
+	background-color: red;
+	box-shadow: rgba(0, 0, 0, 0.3) 5px 5px 5px 1px;
+	border-radius: 50%;
+}
+
+.close span{
+	color: #9229ff;
+
+}
+	
+/*Right*/
+.modal.right.fade .modal-dialog {
+	right: -320px;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+		 -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+			transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+	right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.modal-content {
+	border-radius: 0;
+	border: none;
+}
+
+.modal-header {
+	border-bottom-color: #EEEEEE;
+	background-color: #FAFAFA;
+	height: 500px;
+	padding: 0 !important;
+}
+
+#img-recipes{
+	object-fit: cover;
+    height: 500px;
+    width: 100%;
+}
+
+.recipe-title{
+	color: rgb(74, 74, 74);
+	font-weight: 900;
+	text-align: left;
+	line-height: 1;
+	margin-bottom: 45px;
+
+}
+
+.ingredients{
+	color: rgb(74, 74, 74);
+	text-align: left;
+	line-height: 1;
+	display: block;
+	padding: 0 !important;
+	font-weight: 100;
+}
+.title-ingredients{
+	color: rgb(74, 74, 74);
+	font-weight: 800;
+	font-size: 1.5rem;
+	padding: 0 !important;
+	text-align: left;
+	display: block;
+}
+
+.instructions{
+	color: rgb(74, 74, 74);
+	text-align: left;
+	line-height: 1;
+	display: block;
+	padding: 0 !important;
+	font-size: 1.4rem;
+	font-weight: 100;
+}
+
+.step{
+	text-align: left;
+}
+
+
+/* ----- v CAN BE DELETED v ----- */
+#myModalLabel{
+	-webkit-box-align: center;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 1px;
+    color: rgb(0, 166, 90);
+    cursor: pointer;
+    display: flex;
+    font-family: Catamaran, sans-serif;
+    -webkit-box-pack: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 20px;
+	height: 20px;
+    z-index: 100;
+}
+
+.demo {
+padding-top: 60px;
+padding-bottom: 110px;
+}
+
+.btn-demo {
+margin: 15px;
+padding: 10px 15px;
+border-radius: 0;
+font-size: 16px;
+background-color: #FFFFFF;
+}
+
+.btn-demo:focus {
+outline: 0;
+}
+
+.demo-footer {
+position: fixed;
+bottom: 0;
+width: 100%;
+padding: 15px;
+background-color: #212121;
+text-align: center;
+}
+
+.demo-footer > a {
+text-decoration: none;
+font-weight: bold;
+font-size: 16px;
+color: #fff;
+}
+
+
+@media (min-width: 576px){
+	.modal-dialog {
+		max-width: 700px !important;
+	}
 }
