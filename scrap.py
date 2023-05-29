@@ -4,8 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import sqlite3
+import re
+from datetime import date
 
-conn = sqlite3.connect('db.db')
+conn = sqlite3.connect('C:\wamp\www\Quitoque\db.db')
 cur = conn.cursor()
 
 driverPath = 'chromedriver'
@@ -34,6 +36,9 @@ for element in elements:
 driver.quit()
 
 
+today = date.today()
+today = today.strftime("%d/%m/%Y")
+
 for url in recipes_href_list:
     print(url)
 
@@ -54,15 +59,24 @@ for url in recipes_href_list:
         image_recette = driver.find_element(by='css selector', value='img.hjfyGJ')
         image_recette = image_recette.get_attribute('src')
 
-        cur.execute("INSERT INTO recette (name, image) VALUES (?, ?)", (titre_recette.text, image_recette,))
+        # Récupération du temps de préparation
+        time = driver.find_element(by='css selector', value='span.dkBPuA')
+        time = re.findall(r'\d+', time.text)
+        time = list(map(int, time))
+
+        # Récupération des KCAL
+        kcal = driver.find_element(by='css selector', value='span.hgDtLN')
+        kcal = re.findall(r'\d+', kcal.text)
+        kcal = list(map(int, kcal))
+
+        cur.execute("INSERT INTO recette (name, image, time_total, time_preparation, kcal, date_add) VALUES (?, ?, ?, ?, ?, ?)", (titre_recette.text, image_recette, time[0], time[1], kcal[0], today,))
         last_id_generat = cur.lastrowid
         conn.commit()
 
         # Ajouter la liste des ingrédients
         liste_ingredients = driver.find_elements(by='css selector', value='div.dBXpHX')
         for ingredient in liste_ingredients:
-            cur.execute("INSERT INTO ingredients (id_recette, name) VALUES (?, ?)",
-                        (last_id_generat, ingredient.text))
+            cur.execute("INSERT INTO ingredients (id_recette, name) VALUES (?, ?)", (last_id_generat, ingredient.text))
             conn.commit()
 
         # Ajouter la description de la recette
@@ -70,8 +84,7 @@ for url in recipes_href_list:
         liste_description = driver.find_elements(by='css selector', value='div.kMYLSy')
         for description in liste_description:
             step += 1
-            cur.execute("INSERT INTO instructions (id_recette ,step ,instructions) VALUES (?, ?, ?)",
-                        (last_id_generat, step, description.text))
+            cur.execute("INSERT INTO instructions (id_recette ,step ,instructions) VALUES (?, ?, ?)", (last_id_generat, step, description.text))
             conn.commit()
         continue
     break
